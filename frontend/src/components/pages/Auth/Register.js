@@ -1,16 +1,37 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const Register = () => {
   const {
     register,
-    handleSubmit,
     reset,
+    handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const handleRegister = () => {};
+  const handleRegister = async (receiveData) => {
+    const { fName, lName, email, password } = receiveData;
+
+    const data = {
+      fName,
+      lName,
+      email,
+      password,
+    };
+
+    try {
+      const res = await axios.post(
+        `${"http://localhost:8000/api/"}register`,
+        data
+      );
+      if (res.status === 200) {
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="container w-50 my-5">
@@ -30,7 +51,7 @@ const Register = () => {
             {...register("fName", { required: "First name is required!" })}
           />
           {errors.fName && (
-            <p className="text-danger">{errors.message.fName}</p>
+            <p className="text-danger my-2">{errors.fName.message}</p>
           )}
         </div>
 
@@ -47,7 +68,7 @@ const Register = () => {
             {...register("lName", { required: "Last name is required!" })}
           />
           {errors.lName && (
-            <p className="text-danger">{errors.message.lName}</p>
+            <p className="text-danger my-2">{errors.lName.message}</p>
           )}
         </div>
 
@@ -64,7 +85,7 @@ const Register = () => {
             {...register("email", { required: "Email is required!" })}
           />
           {errors.email && (
-            <p className="text-danger">{errors.message.email}</p>
+            <p className="text-danger my-2">{errors.email.message}</p>
           )}
         </div>
 
@@ -81,7 +102,7 @@ const Register = () => {
             {...register("password", { required: "Password is required!" })}
           />
           {errors.password && (
-            <p className="text-danger">{errors.message.password}</p>
+            <p className="text-danger my-2">{errors.password.message}</p>
           )}
         </div>
         <div className="d-grid gap-2 my-5">
