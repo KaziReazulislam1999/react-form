@@ -9,11 +9,14 @@ const Register = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+  const handleRegister = () => {};
+
   return (
     <div className="container w-50 my-5">
       <h1 className="text-center">Register</h1>
 
-      <form onSubmit={handleSubmit()}>
+      <form onSubmit={handleSubmit(handleRegister)}>
         <div className="mb-3">
           <label htmlFor="fName" className="form-label">
             First Name
