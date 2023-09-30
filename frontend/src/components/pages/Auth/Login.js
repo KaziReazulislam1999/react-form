@@ -1,14 +1,19 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import BeatLoader from "react-spinners/BeatLoader";
+import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
   const [notFound, setNotFound] = useState("");
+
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
 
   const {
     register,
@@ -39,6 +44,9 @@ const Register = () => {
         setSuccess(res.data.message);
         setLoading(false);
         reset();
+
+        Cookies.set("user", JSON.stringify(res.data.userData));
+        navigate("/");
       }
 
       if (res.status === 404) {
@@ -50,6 +58,12 @@ const Register = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (user && user.token) {
+      navigate("/");
+    }
+  }, []);
 
   return (
     <div className="container w-50 my-5">

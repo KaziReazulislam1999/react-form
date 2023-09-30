@@ -1,13 +1,17 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import BeatLoader from "react-spinners/BeatLoader";
+import { useSelector } from "react-redux";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+
+  const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -46,6 +50,11 @@ const Register = () => {
     }
   };
 
+  useEffect(() => {
+    if (user && user.token) {
+      navigate("/");
+    }
+  }, []);
   return (
     <div className="container w-50 my-5">
       <h1 className="text-center">Register</h1>
