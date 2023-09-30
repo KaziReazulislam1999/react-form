@@ -10,7 +10,7 @@ exports.registerUser = async (req, res) => {
 
     if (exist) {
       return res.status(400).json({
-        messaged: "Already exist!",
+        message: "Already exist!",
       });
     }
 
@@ -37,10 +37,16 @@ exports.loginUser = async (req, res) => {
     try {
       const matchUser = await User.findOne({ email: email.toLowerCase() });
 
+      if (!matchUser) {
+        return res.status(404).json({
+          message: "Not found!",
+        });
+      }
+
       const matchPassword = await bcrypt.compare(password, matchUser.password);
 
       if (!matchPassword) {
-        return res.status(200).json({
+        return res.status(401).json({
           message: "Invalid credintials!",
         });
       }

@@ -8,6 +8,7 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [notFound, setNotFound] = useState("");
 
   const {
     register,
@@ -16,12 +17,10 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
-  const handleRegister = async (receiveData) => {
-    const { fName, lName, email, password } = receiveData;
+  const handleLogin = async (receiveData) => {
+    const { email, password } = receiveData;
 
     const data = {
-      fName,
-      lName,
       email,
       password,
     };
@@ -32,13 +31,19 @@ const Register = () => {
       setError("");
 
       const res = await axios.post(
-        `${process.env.REACT_APP_BACKEND_URL}register`,
+        `${process.env.REACT_APP_BACKEND_URL}login`,
         data
       );
+
       if (res.status === 200) {
         setSuccess(res.data.message);
         setLoading(false);
         reset();
+      }
+
+      if (res.status === 404) {
+        setNotFound(res.data.message);
+        setLoading(false);
       }
     } catch (error) {
       setError(error.response.data.message);
@@ -48,49 +53,16 @@ const Register = () => {
 
   return (
     <div className="container w-50 my-5">
-      <h1 className="text-center">Register</h1>
+      <h1 className="text-center">Login</h1>
 
       <div className="d-flex justify-content-center my-4">
         {loading && <BeatLoader color="#36d7b7" loading />}
         {success && <p className="text-success">{success}</p>}
         {error && <p className="text-danger">{error}</p>}
+        {notFound && <p className="text-danger">{notFound}</p>}
       </div>
 
-      <form onSubmit={handleSubmit(handleRegister)}>
-        <div className="mb-3">
-          <label htmlFor="fName" className="form-label">
-            First Name
-          </label>
-          <input
-            type="fName"
-            className="form-control"
-            id="fName"
-            placeholder="Enter your first name"
-            name="fName"
-            {...register("fName", { required: "First name is required!" })}
-          />
-          {errors.fName && (
-            <p className="text-danger my-2">{errors.fName.message}</p>
-          )}
-        </div>
-
-        <div className="mb-3">
-          <label htmlFor="lName" className="form-label">
-            Last Name
-          </label>
-          <input
-            type="lName"
-            className="form-control"
-            id="lName"
-            placeholder="Enter your last name"
-            name="lName"
-            {...register("lName", { required: "Last name is required!" })}
-          />
-          {errors.lName && (
-            <p className="text-danger my-2">{errors.lName.message}</p>
-          )}
-        </div>
-
+      <form onSubmit={handleSubmit(handleLogin)}>
         <div className="mb-3">
           <label htmlFor="email" className="form-label">
             Email
@@ -129,8 +101,8 @@ const Register = () => {
         </div>
       </form>
       <div className="text-center">
-        <p>Already have account!</p>
-        <Link to="/login">Login here</Link>
+        <p>Don't have an account!</p>
+        <Link to="/register">Register here</Link>
       </div>
     </div>
   );
